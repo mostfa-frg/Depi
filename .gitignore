@@ -1,0 +1,102 @@
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env3.10/
+.conda/
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Jupyter Notebook
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# IDEs / Editors
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Python packaging
+# =========================
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# =========================
+# Testing / Coverage
+# =========================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+
+# =========================
+# ML / Data
+# =========================
+data/
+datasets/
+models/
+checkpoints/
+runs/
+outputs/
+artifacts/
+
+# Large model files
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.h5
+*.keras
+*.safetensors
+
+# =========================
+# Temporary files
+# =========================
+*.tmp
+*.temp
+*.bak
+*.cache
+temp/
+tmp/
+
+# =========================
+# Streamlit
+# =========================
+.streamlit/secrets.toml
+```
