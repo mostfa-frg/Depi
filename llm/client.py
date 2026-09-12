@@ -1,35 +1,47 @@
-from .config import LLMConfig
+from collections.abc import Callable
+
+from llm.config import LLMConfig
+from llm.model import MessageRequest
+from providers.base import LLMProvider
+from providers.openai_compatible import OpenAICompatibleProvider
+
 
 class LLMClient:
-    """
-    Client class for interacting with the LLM API.
-    This class uses the configuration parameters defined in LLMConfig to make requests to the API.
-    """
+    """Facade that routes requests to the configured provider."""
 
-    def __init__(self, config: LLMConfig , provider: str = "groq"):
-        """
-        Initializes the LLMClient with the given configuration.
-
-        Args:
-            config (LLMConfig): The configuration object containing API parameters.
-        """
+    def __init__(
+        self,
+        config: LLMConfig,
+        provider: LLMProvider | None = None,
+        provider_factory: Callable[[LLMConfig], LLMProvider] | None = None,
+    ) -> None:
         self.config = config
-        self.provider = provider
-        # Initialize the client with the provided configuration
-        # For example, you might set up an HTTP client here using the base URL and API key
+        self.provider = provider or self._build_provider(provider_factory)
 
-    def generate_response(self, request: str) -> str:
-        """
-        Generates a response from the LLM based on the given prompt.
+    def _build_provider(
+        self, provider_factory: Callable[[LLMConfig], LLMProvider] | None
+    ) -> LLMProvider:
+        if provider_factory is not None:
+            return provider_factory(self.config)
 
-        Args:
-            prompt (str): The input prompt for the LLM.
+        provider_name = self.config.provider.lower().replace("-", "_")
+        if provider_name in {"openai", "openai_compatible", "groq"}:
+            return OpenAICompatibleProvider(self.config)
+        raise ValueError(
+            f"Unsupported provider '{self.config.provider}'. "
+            "Use 'openai_compatible', 'openai', or 'groq', or pass a provider instance."
+        )
 
-        Returns:
-            str: The generated response from the LLM.
+    def generate(self, request: str | MessageRequest) -> str:
+        if isinstance(request, str):
+            request = MessageRequest.from_text(
+                request,
+                max_new_tokens=self.config.max_tokens,
+                temperature=self.config.temperature,
+                top_p=self.config.top_p,
+            )
+        return self.provider.generate(request)
 
-        """
-        response = self._make_request(request)
-
-        # Implementation for generating LLM response
-        pass
+    def generate_response(self, request: str | MessageRequest) -> str:
+        """Backward-compatible alias for :meth:`generate`."""
+        return self.generate(request)

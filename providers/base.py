@@ -1,22 +1,18 @@
-# abstraction class for LLM providers
 from abc import ABC, abstractmethod
 
+from llm.model import MessageRequest
 
-class LLMProvider:
-    """
-    Abstract base class for LLM providers.
-    This class defines the interface that all LLM provider implementations must follow.
-    """
+
+class LLMProvider(ABC):
+    """Interface implemented by every LLM backend."""
 
     @abstractmethod
-    def generate_response(self, request: str) -> str:
-        """
-        Generates a response from the LLM based on the given prompt.
+    def generate(self, request: MessageRequest) -> str:
+        """Generate text for a structured message request."""
+        raise NotImplementedError
 
-        Args:
-            request (str): The input prompt for the LLM.
-        Returns:
-            str: The generated response from the LLM.
-        """
-        pass
-    
+    def generate_response(self, request: str | MessageRequest) -> str:
+        """Backward-compatible convenience method accepting plain text."""
+        if isinstance(request, str):
+            request = MessageRequest.from_text(request)
+        return self.generate(request)

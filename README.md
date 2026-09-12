@@ -92,3 +92,40 @@ python -m evaluation.run_evaluation
    error classification.
 9. Debugging workflow: reproduce, isolate the layer, inspect the exception,
    fix one cause, and rerun the smallest relevant check.
+
+## Provider abstraction
+
+The provider layer exposes one interface for OpenAI-compatible chat APIs. Set the provider configuration in `.env`:
+
+```text
+PROVIDER=openai_compatible
+LLM_API_KEY=your-api-key
+LLM_BASE_URL=https://api.openai.com/v1
+MODEL_NAME=your-model-name
+```
+
+For Groq, use its OpenAI-compatible endpoint:
+
+```text
+PROVIDER=groq
+LLM_API_KEY=your-groq-key
+LLM_BASE_URL=https://api.groq.com/openai/v1
+MODEL_NAME=your-groq-model
+```
+
+The generic client can accept either a plain prompt or structured messages:
+
+```python
+from llm import LLMClient, LLMConfig, Message, MessageRequest, MessageRole
+
+client = LLMClient(LLMConfig())
+print(client.generate("Summarize this ticket."))
+
+request = MessageRequest([
+    Message(MessageRole.SYSTEM, "Be concise."),
+    Message(MessageRole.USER, "Summarize this ticket."),
+])
+print(client.generate(request))
+```
+
+`providers.openai_compatible.OpenAICompatibleProvider` is reusable with OpenAI, Groq, and other services that implement the Chat Completions API. A provider instance can also be injected into `LLMClient` for testing or custom backends.
