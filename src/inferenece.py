@@ -1,6 +1,6 @@
 import torch
-from infrence.model import load_model
-from infrence.generate import generate_text
+from src.infrence.model import load_model
+from src.infrence.generate import generate_text
 
 
 if __name__ == "__main__" : 
@@ -19,4 +19,3 @@ if __name__ == "__main__" :
 
     print("\n --- generated output ---")
     print(output)
-

@@ -88,6 +88,6 @@ def apply_logit_bias(logits: torch.tensor,
 
     logits = logits.clone()
 
-    for token_id, bias in token_bias.item()  :
-        logits[token_id] += bias
+    for token_id, bias in token_bias.items():
+        logits[..., token_id] += bias
     return logits

@@ -3,8 +3,9 @@ torch
 accelerate
 pydantic
 pandas
-numpy 
+numpy<2.3
 matplotlib
 sentencepiece
-dotenv
+python-dotenv
 outlines
+pytest
